@@ -7,10 +7,21 @@ const puppeteer = require("puppeteer");
   const url = "https://iqac.amaljyothi.ac.in/ajce-updates";
   await page.goto(url, { waitUntil: "networkidle2" });
 
-  const tableHTML = await page.evaluate(() => {
-    const tableRows = Array.from(document.querySelectorAll("table tr"));
-    console.log(tableRows);
+  const tableRowsArray = await page.evaluate(() => {
+    const tableRows = Array.from(
+      document.querySelectorAll("table.datatable tbody tr")
+    );
+    return tableRows.map((row) => {
+      const columns = row.querySelectorAll("td");
+      return Array.from(columns).map((column) => column.textContent.trim());
+    });
   });
+
+  console.log(tableRowsArray);
+
+  //   tableRowsArray.forEach(async (row) => {
+  //     console.log(row);
+  //   });
 
   await browser.close();
 })();
